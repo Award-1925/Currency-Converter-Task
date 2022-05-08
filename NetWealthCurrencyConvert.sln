@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetWealthCurrencyConvertAPI", "NetWealthCurrencyConvertAPI\NetWealthCurrencyConvertAPI.csproj", "{9B64473F-5C9C-412B-8BF9-37B046F60753}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetWealthCurrencyConvertWeb", "NetWealthCurrencyConvertWeb\NetWealthCurrencyConvertWeb.csproj", "{1C2865CF-42E2-4C0C-B377-0E7C4F2E9465}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B64473F-5C9C-412B-8BF9-37B046F60753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B64473F-5C9C-412B-8BF9-37B046F60753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B64473F-5C9C-412B-8BF9-37B046F60753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B64473F-5C9C-412B-8BF9-37B046F60753}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C2865CF-42E2-4C0C-B377-0E7C4F2E9465}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C2865CF-42E2-4C0C-B377-0E7C4F2E9465}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C2865CF-42E2-4C0C-B377-0E7C4F2E9465}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C2865CF-42E2-4C0C-B377-0E7C4F2E9465}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DCE0E161-B2EB-4F94-9CDD-CF4259095265}
+	EndGlobalSection
+EndGlobal
