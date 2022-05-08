@@ -1,0 +1,30 @@
+﻿@model ConvertCurrencyViewModel 
+@{
+    ViewData["Title"] = "Currency Converter";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+     
+
+
+<form method="post" enctype="multipart/form-data" asp-action="CurrencyConverter" asp-controller="Currency" >
+       
+    <div> 
+        <span>Convert By Country Code</span> <br />
+       
+        <label>Please enter an amount</label>
+        @Html.EditorFor(x => Model.Amount)  
+        @Html.DropDownListFor(x => x.ConvertFromCurrencyID, new SelectList(Model.CurrencyList, "CurrencyID", "DisplayText"), " - Select Currency - ")
+        <label>ConvertedTo</label>
+        <input placeholder="Amount" value = "@Model.ConvertedAmount" />  
+        @Html.DropDownListFor(x => x.ConvertToCurrencyID, new SelectList(Model.CurrencyList, "CurrencyID", "DisplayText"), " - Select Currency - ")
+        @Html.HiddenFor(x => Model.CurrencyList) 
+    </div> 
+    <input type="submit" value="Convert Currency" class="btn btn-primary" />  
+
+    </form> 
+    
+</div>
+ 
