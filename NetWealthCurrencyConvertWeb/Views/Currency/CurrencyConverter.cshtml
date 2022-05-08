@@ -20,7 +20,8 @@
         <label>ConvertedTo</label>
         <input placeholder="Amount" value = "@Model.ConvertedAmount" />  
         @Html.DropDownListFor(x => x.ConvertToCurrencyID, new SelectList(Model.CurrencyList, "CurrencyID", "DisplayText"), " - Select Currency - ")
-        @Html.HiddenFor(x => Model.CurrencyList) 
+        @Html.DropDownListFor(x => x.ConvertToCurrencyID, new SelectList(Model.CurrencyList, "CurrencyID", "DisplayText"), " - Select Currency - ")
+        @Html.HiddenFor(x => Model.CurrencyList)
     </div> 
     <input type="submit" value="Convert Currency" class="btn btn-primary" />  
 

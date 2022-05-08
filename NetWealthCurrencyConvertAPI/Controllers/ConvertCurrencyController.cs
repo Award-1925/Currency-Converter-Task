@@ -17,24 +17,25 @@ namespace NetWealthCurrencyConvertAPI.Controllers
         }
         List<Models.CurrencyListResponseModel> _mockData_Currencies = new List<Models.CurrencyListResponseModel>()
         {
-            new Models.CurrencyListResponseModel(){CurrencyID = 1, CurrencyCode = "USD", CurrencySymbol = "$", CurrencyName = "United States dollar" },
-            new Models.CurrencyListResponseModel(){CurrencyID = 2, CurrencyCode = "RUB", CurrencySymbol = "₽", CurrencyName = "Russian ruble" },
-            new Models.CurrencyListResponseModel(){CurrencyID = 3, CurrencyCode = "GBP", CurrencySymbol = "£", CurrencyName = "British pound" },
-            new Models.CurrencyListResponseModel(){CurrencyID = 4, CurrencyCode = "SEK", CurrencySymbol = "kr", CurrencyName = "Swedish krona" },
-            new Models.CurrencyListResponseModel(){CurrencyID = 5, CurrencyCode = "AUD", CurrencySymbol = "$", CurrencyName = "Australian dollar" },
-            new Models.CurrencyListResponseModel(){CurrencyID = 6, CurrencyCode = "EUR", CurrencySymbol = "€", CurrencyName = "Euro" },
+            new Models.CurrencyListResponseModel(){CurrencyID = 1, CurrencyCode = "USD", CurrencySymbol = "$", Currency = "United States dollar" },
+            new Models.CurrencyListResponseModel(){CurrencyID = 2, CurrencyCode = "RUB", CurrencySymbol = "₽", Currency = "Russian ruble" },
+            new Models.CurrencyListResponseModel(){CurrencyID = 3, CurrencyCode = "GBP", CurrencySymbol = "£", Currency = "British pound" },
+            new Models.CurrencyListResponseModel(){CurrencyID = 4, CurrencyCode = "SEK", CurrencySymbol = "kr", Currency = "Swedish krona" },
+            new Models.CurrencyListResponseModel(){CurrencyID = 5, CurrencyCode = "AUD", CurrencySymbol = "$", Currency = "Australian dollar" },
+            new Models.CurrencyListResponseModel(){CurrencyID = 6, CurrencyCode = "EUR", CurrencySymbol = "€", Currency = "Euro" },
         }; 
 
         [HttpPost(Name = "Convert Currency")] 
-        public Models.ConvertCurrencyResponseModel ConvertCurrency(Models.ConvertCurrencyRequestModel ConvertCurrencyRequest)
+        public Models.ConvertCurrencyResponseModel ConvertCurrency(Models.ConvertCurrencyRequestModel convertCurrencyRequest)
         {
+            decimal convertedAmount = Business.Currency.ConvertCurrency(convertCurrencyRequest.FromCurrencyID, convertCurrencyRequest.Amount, convertCurrencyRequest.ToCurrencyID); 
             return new Models.ConvertCurrencyResponseModel
             {
                 ConvertedDateTime = DateTime.Now,
-                ConvertedFromCurrencyID = ConvertCurrencyRequest.FromCurrencyID,
-                ConvertedFromAmount = ConvertCurrencyRequest.Amount,
-                ConvertedToCurrencyID = ConvertCurrencyRequest.ToCurrencyID,
-                ConvertedToAmount = (new Random(30).Next() * (ConvertCurrencyRequest.Amount / new Random(100).Next())),
+                ConvertedFromCurrencyID = convertCurrencyRequest.FromCurrencyID,
+                ConvertedFromAmount = convertCurrencyRequest.Amount,
+                ConvertedToCurrencyID = convertCurrencyRequest.ToCurrencyID,
+                ConvertedToAmount = convertedAmount,
                 Success = true
             };  
         }
@@ -42,7 +43,9 @@ namespace NetWealthCurrencyConvertAPI.Controllers
         [HttpGet(Name = "Get Currency List")]
         public List<Models.CurrencyListResponseModel> GetCurrencyList()
         {
-            return _mockData_Currencies;
+            List<Models.CurrencyListResponseModel> currencies = Business.Currency.GetCurrencies().Select(x => new Models.CurrencyListResponseModel() { CurrencyID = x.CurrencyID, CurrencyCode = x.CurrencyCode, CurrencySymbol = x.CurrencySymbol, Currency = x.Currency }).ToList();
+ 
+            return currencies;
         }
     }
 }
