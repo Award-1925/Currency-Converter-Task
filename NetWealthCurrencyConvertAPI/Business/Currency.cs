@@ -7,10 +7,15 @@
             Data.CurrencyTableAdapters.sp_GetCurrenciesTableAdapter oAdapter = new Data.CurrencyTableAdapters.sp_GetCurrenciesTableAdapter();
             return oAdapter.GetData();
         }
-        public static decimal ConvertCurrency(int currencyID, decimal amount, int destinationCurrencyID)
+        public static Data.Currency.sp_ConvertCurrencyRow ConvertCurrency(string currencyCode, decimal amount, string destinationCurrencyCode)
         {
-            Data.CurrencyTableAdapters.QueriesTableAdapter oQueryAdapter = new Data.CurrencyTableAdapters.QueriesTableAdapter();
-            return (decimal)oQueryAdapter.sp_ConvertCurrency(currencyID, amount, destinationCurrencyID); 
-        }
+            Data.CurrencyTableAdapters.sp_ConvertCurrencyTableAdapter oAdapter = new Data.CurrencyTableAdapters.sp_ConvertCurrencyTableAdapter();
+            Data.Currency.sp_ConvertCurrencyDataTable oData = oAdapter.GetData(currencyCode, amount, destinationCurrencyCode);
+            if(oData.Count > 0)
+            {
+                return oAdapter.GetData(currencyCode, amount, destinationCurrencyCode)[0];
+            }
+            return null;
+        } 
     }
 }

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NetWealthCurrencyConvertWeb.Models;
 using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 namespace NetWealthCurrencyConvertWeb.Controllers
@@ -19,9 +21,8 @@ namespace NetWealthCurrencyConvertWeb.Controllers
         {
             Models.ConvertCurrencyViewModel viewModel = new Models.ConvertCurrencyViewModel();
              
-            viewModel.CurrencyList = await Api.CurrencyAPI.getCurrencyList(); 
-            viewModel.Amount = 0;
-            viewModel.ConvertedAmount = 0;
+            viewModel.CurrencyList = await Api.CurrencyAPI.GetCurrencyList(); 
+            viewModel.Amount = 0; 
 
             return View(viewModel);
         }
@@ -33,15 +34,47 @@ namespace NetWealthCurrencyConvertWeb.Controllers
             {
                 return View("Error");
             }
-             
-            viewModel.CurrencyList = await Api.CurrencyAPI.getCurrencyList();
 
-            Models.ConvertCurrencyResponseModel oResponse = await Api.CurrencyAPI.convertCurrency(viewModel);
-            if (oResponse != null && oResponse.Success)
+            viewModel.CurrencyList = await Api.CurrencyAPI.GetCurrencyList();
+
+            if (!ModelState.IsValid)
             {
-                viewModel.ConvertedAmount = oResponse.ConvertedToAmount;
+                return View(viewModel);
+            }
+
+            Models.ConvertCurrencyResponseModel oResponse = await Api.CurrencyAPI.ConvertCurrency(viewModel);
+            if (oResponse != null)
+            {
+                if (oResponse.Status == "OK")
+                {
+                    viewModel.ConversionDisplayHeader = $"{TruncateDecimal(oResponse.ConvertedAmount, 2).ToString()} {oResponse.DestinationCurrencyCode}";
+                    viewModel.ConversionDisplayMessage = $"{oResponse.Amount} {oResponse.CurrencyCode} = {oResponse.ConvertedAmount} {oResponse.DestinationCurrencyCode}";
+                    viewModel.lastUpdatedDisplayMessage = $"Last Updated : {oResponse.LastUpdatedTS}";
+                }
+                else
+                {
+                    viewModel.ConversionDisplayMessage = String.Empty;
+                    viewModel.Message = oResponse.Message;
+                }
             }
             return View(viewModel);
-        } 
+        }
+        private decimal TruncateDecimal(decimal value, int precision)
+        {
+            decimal step = (decimal)Math.Pow(10, precision);
+            decimal tmp = Math.Truncate(step * value);
+            return tmp / step;
+        }
+
+        public IActionResult ViewAPIEndpoints()
+        {
+            return Redirect($"{Api.CurrencyAPI.ApiURL}swagger/index.html");
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 }

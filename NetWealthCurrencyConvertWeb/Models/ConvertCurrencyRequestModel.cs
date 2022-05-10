@@ -1,9 +1,9 @@
 ﻿namespace NetWealthCurrencyConvertWeb.Models
 {
     public class ConvertCurrencyRequestModel
-    { 
-        public int FromCurrencyID { get; set; }
-        public int Amount { get; set; } 
-        public int ToCurrencyID { get; set; } 
+    {
+        public string CurrencyCode { get; set; }
+        public decimal Amount { get; set; }
+        public string DestinationCurrencyCode { get; set; }
     }
 }

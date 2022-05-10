@@ -1,31 +1,52 @@
 ﻿@model ConvertCurrencyViewModel 
 @{
     ViewData["Title"] = "Currency Converter";
-}
-
+} 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-     
-
-
-<form method="post" enctype="multipart/form-data" asp-action="CurrencyConverter" asp-controller="Currency" >
-       
-    <div> 
-        <span>Convert By Country Code</span> <br />
-       
-        <label>Please enter an amount</label>
-        @Html.EditorFor(x => Model.Amount)  
-        @Html.DropDownListFor(x => x.ConvertFromCurrencyID, new SelectList(Model.CurrencyList, "CurrencyID", "DisplayText"), " - Select Currency - ")
-        <label>ConvertedTo</label>
-        <input placeholder="Amount" value = "@Model.ConvertedAmount" />  
-        @Html.DropDownListFor(x => x.ConvertToCurrencyID, new SelectList(Model.CurrencyList, "CurrencyID", "DisplayText"), " - Select Currency - ")
-        @Html.DropDownListFor(x => x.ConvertToCurrencyID, new SelectList(Model.CurrencyList, "CurrencyID", "DisplayText"), " - Select Currency - ")
-        @Html.HiddenFor(x => Model.CurrencyList)
-    </div> 
-    <input type="submit" value="Convert Currency" class="btn btn-primary" />  
-
-    </form> 
-    
-</div>
- 
+    <h1 class="display-4">Convert Currency</h1>
+    <p>View API end points <a asp-controller="Currency" asp-action="ViewAPIEndpoints" target="_blank">here</a>.</p>
+      
+    <form method="post" enctype="multipart/form-data" asp-action="CurrencyConverter" asp-controller="Currency" > 
+        <div class="row">
+            <div class="column-amount">
+                <div class="column-header">Amount</div>
+                <div class="column-content column-content-input">
+                    @Html.EditorFor(x => Model.Amount)  
+                </div> 
+            </div>
+            <div class="column-dropdown">
+                <div class="column-header">Convert From</div>
+                <div class="column-content column-content-input">
+                    @Html.DropDownListFor(x => x.CurrencyCode, new SelectList(Model.CurrencyList, "CurrencyCode", "DisplayText"), " - Select Currency - ")
+                    @Html.ValidationMessageFor(x => x.CurrencyCode)
+                </div>
+            </div>
+            <div class="column-dropdown">
+                <div class="column-header">Convert To</div>
+                <div class="column-content column-content-input">
+                    @Html.DropDownListFor(x => x.DestinationCurrencyCode, new SelectList(Model.CurrencyList, "CurrencyCode", "DisplayText"), " - Select Currency - ") 
+                    @Html.ValidationMessageFor(x => x.DestinationCurrencyCode)
+                </div>
+            </div> 
+            <div class="column-button"> 
+                <div class="column-header"></div> 
+                <div class="column-content ">
+                    <input type="submit" value="Calculate" class="btn btn-primary" />  
+                </div>
+            </div> 
+            <div class="conversionresult-header">  
+                @Html.DisplayFor(x => Model.ConversionDisplayHeader)  
+            </div>
+            <div class="conversionresult-content">  
+                @Html.DisplayFor(x => Model.ConversionDisplayMessage)  
+            </div>
+            <div class="conversionresult-contentsmall">  
+                @Html.DisplayFor(x => Model.lastUpdatedDisplayMessage)  
+            </div> 
+            <div class="conversionresult-error">  
+                @Html.DisplayFor(x => Model.Message)  
+            </div>
+            
+        </div> 
+    </form>  
+</div> 

@@ -7,43 +7,46 @@ namespace NetWealthCurrencyConvertAPI.Controllers
     [Route("api/[controller]/[action]")]
     public class ConvertCurrencyController : ControllerBase
     { 
-        private readonly ILogger<ConvertCurrencyController> _logger;
-        SqlConnection oSQlCon = new SqlConnection();
-        SqlCommand oSQLCommand = new SqlCommand();
+        private readonly ILogger<ConvertCurrencyController> _logger; 
         public ConvertCurrencyController(ILogger<ConvertCurrencyController> logger)
         {
-            _logger = logger;
-            oSQlCon.ConnectionString = Properties.Resources.ConnectionString;
-        }
-        List<Models.CurrencyListResponseModel> _mockData_Currencies = new List<Models.CurrencyListResponseModel>()
-        {
-            new Models.CurrencyListResponseModel(){CurrencyID = 1, CurrencyCode = "USD", CurrencySymbol = "$", Currency = "United States dollar" },
-            new Models.CurrencyListResponseModel(){CurrencyID = 2, CurrencyCode = "RUB", CurrencySymbol = "₽", Currency = "Russian ruble" },
-            new Models.CurrencyListResponseModel(){CurrencyID = 3, CurrencyCode = "GBP", CurrencySymbol = "£", Currency = "British pound" },
-            new Models.CurrencyListResponseModel(){CurrencyID = 4, CurrencyCode = "SEK", CurrencySymbol = "kr", Currency = "Swedish krona" },
-            new Models.CurrencyListResponseModel(){CurrencyID = 5, CurrencyCode = "AUD", CurrencySymbol = "$", Currency = "Australian dollar" },
-            new Models.CurrencyListResponseModel(){CurrencyID = 6, CurrencyCode = "EUR", CurrencySymbol = "€", Currency = "Euro" },
-        }; 
+            _logger = logger; 
+        } 
 
         [HttpPost(Name = "Convert Currency")] 
         public Models.ConvertCurrencyResponseModel ConvertCurrency(Models.ConvertCurrencyRequestModel convertCurrencyRequest)
-        {
-            decimal convertedAmount = Business.Currency.ConvertCurrency(convertCurrencyRequest.FromCurrencyID, convertCurrencyRequest.Amount, convertCurrencyRequest.ToCurrencyID); 
+        { 
+            Data.Currency.sp_ConvertCurrencyRow currencyRow = Business.Currency.ConvertCurrency(convertCurrencyRequest.CurrencyCode, convertCurrencyRequest.Amount, convertCurrencyRequest.DestinationCurrencyCode); 
+            if(currencyRow == null)
+            {
+                return new Models.ConvertCurrencyResponseModel
+                {
+                    ConvertedDateTime = DateTime.Now,
+                    CurrencyCode = convertCurrencyRequest.CurrencyCode,
+                    Amount = convertCurrencyRequest.Amount,
+                    DestinationCurrencyCode = convertCurrencyRequest.DestinationCurrencyCode,
+                    ConvertedAmount = 0,
+                    LastUpdatedTS = DateTime.Now,
+                    Status = "Error",
+                    Message = "There is no updated conversion rate available for that currency pair."
+                };
+            }
             return new Models.ConvertCurrencyResponseModel
             {
-                ConvertedDateTime = DateTime.Now,
-                ConvertedFromCurrencyID = convertCurrencyRequest.FromCurrencyID,
-                ConvertedFromAmount = convertCurrencyRequest.Amount,
-                ConvertedToCurrencyID = convertCurrencyRequest.ToCurrencyID,
-                ConvertedToAmount = convertedAmount,
-                Success = true
+                ConvertedDateTime = DateTime.Now, 
+                CurrencyCode = currencyRow.CurrencyCode,
+                Amount = currencyRow.Amount,
+                DestinationCurrencyCode = currencyRow.DestinationCurrencyCode,
+                ConvertedAmount = currencyRow.ConvertedAmount,
+                LastUpdatedTS = currencyRow.LastUpdatedTS,
+                Status = "OK"
             };  
         }
  
         [HttpGet(Name = "Get Currency List")]
-        public List<Models.CurrencyListResponseModel> GetCurrencyList()
+        public List<Models.CurrencyListModel> GetCurrencyList()
         {
-            List<Models.CurrencyListResponseModel> currencies = Business.Currency.GetCurrencies().Select(x => new Models.CurrencyListResponseModel() { CurrencyID = x.CurrencyID, CurrencyCode = x.CurrencyCode, CurrencySymbol = x.CurrencySymbol, Currency = x.Currency }).ToList();
+            List<Models.CurrencyListModel> currencies = Business.Currency.GetCurrencies().Select(x => new Models.CurrencyListModel() { Currency = x.Currency, CurrencyCode = x.CurrencyCode }).ToList();
  
             return currencies;
         }
